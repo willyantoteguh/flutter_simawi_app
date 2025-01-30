@@ -5,6 +5,7 @@ import 'package:flutter_simawi_app/common/constants/local_images.dart';
 import 'package:flutter_simawi_app/presentation/profile/user_management_screen.dart';
 import 'package:flutter_simawi_app/presentation/widgets/custom_appbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../common/theme/color/color_name.dart';
 import '../../common/theme/text/base_text.dart';
@@ -57,12 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               tileMenu(icon: Icons.person_outline, label: "Profile"),
               SizedBox(height: 14.h),
               tileMenu(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserManagementScreen()));
-                },
+                onTap: () => context.go('/d/user-table'),
                 icon: Icons.people_alt_outlined,
                 label: "User Management",
               ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,8 +26,16 @@ class DashboardScreen extends StatelessWidget {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.my_library_books),
+            label: 'History',
+          ),
+          NavigationDestination(
+            icon: Icon(CupertinoIcons.doc_checkmark_fill),
+            label: 'Registration',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
         onDestinationSelected: _goBranch,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_simawi_app/presentation/profile/profile_screen.dart';
+import 'package:flutter_simawi_app/presentation/profile/user_management_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/home/dashboard_screen.dart';
@@ -9,6 +10,8 @@ import '../../presentation/home/home_screen.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _sheeletNavigatorAKey = GlobalKey<NavigatorState>(debugLabel: 'shellA');
 final _sheeletNavigatorBKey = GlobalKey<NavigatorState>(debugLabel: 'shellB');
+final _sheeletNavigatorCKey = GlobalKey<NavigatorState>(debugLabel: 'shellC');
+final _sheeletNavigatorDKey = GlobalKey<NavigatorState>(debugLabel: 'shellD');
 
 class AppRouter {
   final goRouter = GoRouter(
@@ -25,8 +28,8 @@ class AppRouter {
               GoRoute(
                   path: '/a',
                   pageBuilder: (context, state) => const NoTransitionPage(
-                        child:
-                            HomeScreen(label: "A", detailsPath: "/a/details"),
+                        child: HomeScreen(
+                            label: "Home", detailsPath: "/a/details"),
                       ),
                   routes: [
                     GoRoute(
@@ -39,13 +42,41 @@ class AppRouter {
               GoRoute(
                   path: '/b',
                   pageBuilder: (context, state) => const NoTransitionPage(
-                        child: ProfileScreen(),
+                        child: HomeScreen(
+                            label: "History", detailsPath: "/b/details"),
                       ),
                   routes: [
                     GoRoute(
                         path: 'details',
                         builder: (context, state) =>
                             const DetailScreen(label: "B"))
+                  ])
+            ]),
+            StatefulShellBranch(navigatorKey: _sheeletNavigatorCKey, routes: [
+              GoRoute(
+                  path: '/c',
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                        child: HomeScreen(
+                            label: "Registration", detailsPath: "/c/details"),
+                      ),
+                  routes: [
+                    GoRoute(
+                        path: 'details',
+                        builder: (context, state) =>
+                            const DetailScreen(label: "C"))
+                  ])
+            ]),
+            StatefulShellBranch(navigatorKey: _sheeletNavigatorDKey, routes: [
+              GoRoute(
+                  path: '/d',
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                        child: ProfileScreen(),
+                      ),
+                  routes: [
+                    GoRoute(
+                        path: 'user-table',
+                        builder: (context, state) =>
+                            const UserManagementScreen())
                   ])
             ]),
           ],

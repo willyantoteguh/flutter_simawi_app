@@ -10,18 +10,17 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Text Root - $label"),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Home $label Screen '),
-          InkWell(
-              onTap: () => context.go(detailsPath),
-              child: const Text('View Details'))
-        ],
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(label),
+            InkWell(
+                onTap: () => context.go(detailsPath),
+                child: const Text('View Details'))
+          ],
+        ),
       ),
     );
   }

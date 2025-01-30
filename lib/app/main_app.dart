@@ -11,12 +11,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
         designSize: const Size(360, 800),
-        builder: (_, child) {
-          return MaterialApp(
-            // routerConfig: AppRouter().goRouter,
+        builder: (context, child) {
+          return MaterialApp.router(
+            routerConfig: AppRouter().goRouter,
             debugShowCheckedModeBanner: false,
-            home: const ProfileScreen(),
-            theme: ThemeData.light(useMaterial3: false),
+            theme: ThemeData.light(useMaterial3: true),
           );
         });
   }
