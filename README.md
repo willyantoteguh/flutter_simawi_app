@@ -7,6 +7,10 @@ MAIN FEATURES
 >  User Management: Admins can create, read, update, and delete the
 system user data
 
+Flowchart
+
+![Untitled (2)](https://github.com/user-attachments/assets/9a4dbc2a-5731-4cec-b193-0e01b683af2c)
+
 Profile Menu
 
 ![1](https://github.com/user-attachments/assets/62e5a5d5-e800-4aad-9074-85b8b0b79ea5)
