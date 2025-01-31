@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_simawi_app/presentation/profile/profile_screen.dart';
 import 'package:flutter_simawi_app/presentation/profile/user_management_screen.dart';
+import 'package:flutter_simawi_app/presentation/registration/patient_registration_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/home/dashboard_screen.dart';
@@ -56,8 +57,7 @@ class AppRouter {
               GoRoute(
                   path: '/c',
                   pageBuilder: (context, state) => const NoTransitionPage(
-                        child: HomeScreen(
-                            label: "Registration", detailsPath: "/c/details"),
+                        child: PatientRegistration(),
                       ),
                   routes: [
                     GoRoute(

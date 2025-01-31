@@ -7,6 +7,8 @@ import '../../common/theme/text/base_text.dart';
 import '../../data/database/database_instance.dart';
 import '../../data/model/user.dart';
 import '../widgets/custom_appbar.dart';
+import '../widgets/custom_divider.dart';
+import '../widgets/other_navigation.dart';
 import 'create_user_screen.dart';
 
 class UserManagementScreen extends StatefulWidget {
@@ -72,7 +74,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              _buildDivider(),
+              buildDivider(),
               SizedBox(height: 18.h),
               FutureBuilder(
                 future: databaseInstance!.totalAdmin(),
@@ -111,7 +113,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 },
               ),
               SizedBox(height: 14.h),
-              _buildDivider(),
+              buildDivider(),
               FutureBuilder<List<User>>(
                 future: databaseInstance!.getAll(),
                 builder: (context, snapshot) {
@@ -133,7 +135,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                 onEditTap: () {
                                   var user = snapshot.data![index];
 
-                                  _navigateTo(
+                                  navigateTo(
                                       context,
                                       CreateUserScreen(
                                         isUpdateScreen: true,
@@ -160,7 +162,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorName.mainColor,
-        onPressed: () => _navigateTo(
+        onPressed: () => navigateTo(
             context,
             const CreateUserScreen(
               isUpdateScreen: false,
@@ -168,15 +170,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
           (value) => setState(() {}),
         ),
         child: const Icon(Icons.add, color: ColorName.whiteColor),
-      ),
-    );
-  }
-
-  Future<dynamic> _navigateTo(BuildContext context, Widget screen) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => screen,
       ),
     );
   }
@@ -227,14 +220,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       icon: Icon(icon, color: color, size: 20),
     );
   }
-
-  Widget _buildDivider() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: const Divider(
-          color: ColorName.grey1Color,
-          thickness: 0.2,
-        ),
-      );
 }
 
 
@@ -253,7 +238,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 //       updatedAt: "2025-01-30",
                 //     );
 
-                //     _navigateTo(
+                //     navigateTo(
                 //       context,
                 //       CreateUserScreen(isUpdateScreen: true, user: user),
                 //     );

@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController? controller;
   final bool? isTextArea;
+  final bool readOnly;
   void Function(String)? onChanged;
   void Function(String)? onSubmit;
   String? Function(String?)? validator;
@@ -20,6 +21,7 @@ class CustomTextField extends StatefulWidget {
     required this.hintText,
     this.controller,
     this.isTextArea = false,
+    this.readOnly = true,
     this.onChanged,
     this.onSubmit,
     this.validator,
@@ -34,16 +36,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        enabled: widget.readOnly,
         controller: widget.controller,
         validator: widget.validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         onTapOutside: (event) => FocusManager.instance.primaryFocus!.unfocus(),
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onSubmit,
-        // keyboardType:
-        //     (widget.isTextArea == true) ? TextInputType.multiline : null,
-        // minLines: (widget.isTextArea == true) ? 3 : 1,
-        // maxLines: (widget.isTextArea == true) ? null : 1,
+        keyboardType:
+            (widget.isTextArea == true) ? TextInputType.multiline : null,
+        minLines: (widget.isTextArea == true) ? 3 : 1,
+        maxLines: (widget.isTextArea == true) ? null : 1,
         style: widget.fillTextStyle ??
             BaseText.mainText12.copyWith(
               fontWeight: FontWeight.w400,
@@ -60,6 +63,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 color: Colors.white.withOpacity(0.06),
               )),
           enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(13.r),
+              borderSide: BorderSide(
+                color: (widget.borderColor) ?? Colors.white.withOpacity(0.06),
+              )),
+          disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13.r),
               borderSide: BorderSide(
                 color: (widget.borderColor) ?? Colors.white.withOpacity(0.06),
