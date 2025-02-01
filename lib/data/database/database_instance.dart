@@ -110,6 +110,12 @@ class DatabaseInstance {
     return int.parse(query.length.toString());
   }
 
+  Future<List<Map<String, dynamic>>> getAllDoctor() async {
+    final query =
+        await _database!.rawQuery("SELECT name FROM $tableName WHERE role = 2");
+    return query;
+  }
+
   Future<int> hapus(idUser) async {
     final query = await _database!
         .delete(tableName, where: '$id = ?', whereArgs: [idUser]);

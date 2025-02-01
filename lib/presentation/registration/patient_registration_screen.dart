@@ -5,6 +5,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_simawi_app/data/model/user.dart';
 import 'package:flutter_simawi_app/presentation/widgets/custom_appbar.dart';
 import 'package:flutter_simawi_app/presentation/widgets/primary_button.dart';
 import 'package:intl/intl.dart';
