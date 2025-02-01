@@ -37,6 +37,18 @@ class DatabaseInstance {
   final String createdAtPatient = 'createdAtPatient';
   final String updatedAtPatient = 'updatedAtPatient';
 
+  final String table3Name = 'patient_history';
+  final String idPatientHistory = 'idPatientHistory';
+  final String idRecordNumber = 'idRecordNumber';
+  final String dateVisit = 'dateVisit';
+  final String registeredBy = 'registeredBy';
+  final String consultationBy = 'consultationBy';
+  final String symptoms = 'symptoms';
+  final String doctorDiagnose = 'doctorDiagnose';
+  final String icd10Code = 'icd10Code';
+  final String icd10Name = 'icd10Name';
+  final String isDone = 'isDone';
+
   Database? _database;
   Future<Database> database() async {
     if (_database != null) return _database!;
@@ -57,9 +69,9 @@ class DatabaseInstance {
 
   Future _onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $tableName ($id INTEGER PRIMARY KEY, $name TEXT NULL, $email TEXT NULL, $password TEXT NULL, $role INTEGER, $createdAt TEXT NULL, $updatedAt TEXT NULL)');
-    await db
-        .execute('''CREATE TABLE $table2Name ($idPatient INTEGER PRIMARY KEY, 
+        'CREATE TABLE $tableName ($id INTEGER PRIMARY KEY AUTOINCREMENT, $name TEXT NULL, $email TEXT NULL, $password TEXT NULL, $role INTEGER, $createdAt TEXT NULL, $updatedAt TEXT NULL)');
+    await db.execute(
+        '''CREATE TABLE $table2Name ($idPatient INTEGER PRIMARY KEY AUTOINCREMENT, 
         $recordNumber INTEGER, 
         $namePatient TEXT NULL, 
         $birth TEXT NULL, 
@@ -73,10 +85,25 @@ class DatabaseInstance {
         $height VARCHAR NULL, 
         $createdAtPatient TEXT NULL,  
         $updatedAtPatient TEXT NULL)''');
+    await db.execute(
+        '''CREATE TABLE $table3Name ($idPatientHistory INTEGER PRIMARY KEY AUTOINCREMENT,  
+        $idRecordNumber INTEGER, 
+        $dateVisit TEXT NOT NULL, 
+        $registeredBy INTEGER, 
+        $consultationBy INTEGER,
+        $symptoms TEXT NULL, 
+        $doctorDiagnose TEXT NULL, 
+        $icd10Code TEXT NULL,
+        $icd10Name TEXT NULL, 
+        $isDone BOOLEAN,
+        FOREIGN KEY ($idRecordNumber) REFERENCES $table2Name ($recordNumber)
+        FOREIGN KEY ($registeredBy) REFERENCES $tableName ($id)
+        FOREIGN KEY ($consultationBy) REFERENCES $tableName ($id))''');
   }
 
   Future<List<User>> getAll() async {
     final data = await _database!.query(tableName);
+    debugPrint("getAll user nih: ${data.first}");
     List<User> result = data.map((e) => User.fromMap(e)).toList();
     return result;
   }
@@ -88,6 +115,21 @@ class DatabaseInstance {
     return data;
   }
 
+  Future<List<Map<String, Object?>>> getAllPatientHistory() async {
+    final data = await _database!.query(table3Name);
+    debugPrint("getAllPatientHistory data nih: ${data.first}");
+    return data;
+  }
+
+  Future<List<Map<String, dynamic>>> getPatientData() async {
+    final query = _database!.rawQuery('''
+      SELECT *
+      FROM $table2Name AS p
+      INNER JOIN $table3Name AS h ON p.recordNumber = h.idRecordNumber
+    ''');
+    return query;
+  }
+
   Future<int> insert(Map<String, dynamic> row) async {
     final query = await _database!.insert(tableName, row);
     return query;
@@ -95,6 +137,11 @@ class DatabaseInstance {
 
   Future<int> insertPatient(Map<String, dynamic> row) async {
     final query = await _database!.insert(table2Name, row);
+    return query;
+  }
+
+  Future<int> insertHistory(Map<String, dynamic> row) async {
+    final query = await _database!.insert(table3Name, row);
     return query;
   }
 
@@ -111,8 +158,8 @@ class DatabaseInstance {
   }
 
   Future<List<Map<String, dynamic>>> getAllDoctor() async {
-    final query =
-        await _database!.rawQuery("SELECT name FROM $tableName WHERE role = 2");
+    final query = await _database!
+        .rawQuery("SELECT id, name FROM $tableName WHERE role = 2");
     return query;
   }
 

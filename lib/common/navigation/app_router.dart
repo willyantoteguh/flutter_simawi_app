@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_simawi_app/presentation/history/patient_history_screen.dart';
 import 'package:flutter_simawi_app/presentation/profile/profile_screen.dart';
 import 'package:flutter_simawi_app/presentation/profile/user_management_screen.dart';
 import 'package:flutter_simawi_app/presentation/registration/patient_registration_screen.dart';
+import 'package:flutter_simawi_app/presentation/registration/patient_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/home/dashboard_screen.dart';
@@ -41,30 +43,23 @@ class AppRouter {
             ]),
             StatefulShellBranch(navigatorKey: _sheeletNavigatorBKey, routes: [
               GoRoute(
-                  path: '/b',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                        child: HomeScreen(
-                            label: "History", detailsPath: "/b/details"),
-                      ),
-                  routes: [
-                    GoRoute(
-                        path: 'details',
-                        builder: (context, state) =>
-                            const DetailScreen(label: "B"))
-                  ])
+                path: '/b',
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: PatientHistoryScreen()),
+              )
             ]),
             StatefulShellBranch(navigatorKey: _sheeletNavigatorCKey, routes: [
               GoRoute(
-                  path: '/c',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                        child: PatientRegistration(),
-                      ),
-                  routes: [
-                    GoRoute(
-                        path: 'details',
-                        builder: (context, state) =>
-                            const DetailScreen(label: "C"))
-                  ])
+                path: '/c',
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: PatientScreen(),
+                ),
+                // routes: [
+                //   GoRoute(
+                //       path: 'details',
+                //       builder: (context, state) => const PatientRegistration())
+                // ],
+              )
             ]),
             StatefulShellBranch(navigatorKey: _sheeletNavigatorDKey, routes: [
               GoRoute(

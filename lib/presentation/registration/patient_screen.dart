@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_simawi_app/data/model/patient.dart';
+import 'package:flutter_simawi_app/data/model/patient_history.dart';
+import 'package:flutter_simawi_app/data/model/user.dart';
 import 'package:flutter_simawi_app/presentation/registration/patient_registration_screen.dart';
 import 'package:flutter_simawi_app/presentation/widgets/custom_divider.dart';
 import 'package:flutter_simawi_app/presentation/widgets/other_navigation.dart';
+import 'package:flutter_simawi_app/presentation/widgets/primary_button.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/theme/color/color_name.dart';
@@ -61,9 +64,11 @@ class _PatientScreenState extends State<PatientScreen> {
 
   List<Map<String, dynamic>> listDoctors = [];
   var selectedDoctor;
+  var selectedDoctorNew;
   var selectedDateVisit;
   final TextEditingController dateVisitController = TextEditingController();
 
+  List<User> listRegisteredBy = [];
   @override
   void initState() {
     databaseInstance = DatabaseInstance();
@@ -107,6 +112,11 @@ class _PatientScreenState extends State<PatientScreen> {
                   listDoctors = await databaseInstance!.getAllDoctor();
                   debugPrint(
                       "listDoctors: ${listDoctors.map((e) => e).toList().toString()}");
+                });
+                Future.delayed(const Duration(seconds: 3), () async {
+                  listRegisteredBy = await databaseInstance!.getAll();
+                  debugPrint(
+                      "listRegisteredBy: ${listRegisteredBy.map((e) => e).toList().toString()}");
                 });
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -191,221 +201,274 @@ class _PatientScreenState extends State<PatientScreen> {
                                               child: Padding(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 16.w),
-                                                child: SizedBox(
-                                                  // height: ScreenUtil()
-                                                  //         .screenHeight /
-                                                  //     2,
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(height: 24.h),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text("Date Visit",
-                                                              style: BaseText
-                                                                  .blackText14),
-                                                          SizedBox(height: 6.h),
-                                                          GestureDetector(
-                                                            onTap: () async {
-                                                              DateTime?
-                                                                  pickedDate =
-                                                                  await showDatePicker(
-                                                                      context:
-                                                                          context,
-                                                                      initialDate:
-                                                                          DateTime
-                                                                              .now(), //get today's date
-                                                                      firstDate:
-                                                                          DateTime(
-                                                                              1960), //DateTime.now() - not to allow to choose before today.
-                                                                      lastDate:
-                                                                          DateTime(
-                                                                              2101));
+                                                child: StatefulBuilder(builder:
+                                                    (context, newSetState) {
+                                                  return SizedBox(
+                                                    // height: ScreenUtil()
+                                                    //         .screenHeight /
+                                                    //     2,
+                                                    child: Column(
+                                                      children: [
+                                                        SizedBox(height: 24.h),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text("Date Visit",
+                                                                style: BaseText
+                                                                    .blackText14),
+                                                            SizedBox(
+                                                                height: 6.h),
+                                                            GestureDetector(
+                                                              onTap: () async {
+                                                                DateTime?
+                                                                    pickedDate =
+                                                                    await showDatePicker(
+                                                                        context:
+                                                                            context,
+                                                                        initialDate:
+                                                                            DateTime
+                                                                                .now(), //get today's date
+                                                                        firstDate:
+                                                                            DateTime(
+                                                                                1960), //DateTime.now() - not to allow to choose before today.
+                                                                        lastDate:
+                                                                            DateTime(2101));
 
-                                                              if (pickedDate !=
-                                                                  null) {
-                                                                debugPrint(
-                                                                    pickedDate
-                                                                        .toString()); //get the picked date in the format => 2022-07-04 00:00:00.000
-                                                                String
-                                                                    formattedDate =
-                                                                    DateFormat(
-                                                                            'dd-MM-yyyy')
-                                                                        .format(
-                                                                            pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-                                                                DateTime
-                                                                    formatAge =
-                                                                    pickedDate;
-
-                                                                debugPrint(
-                                                                    formattedDate); //formatted date output using intl package =>  2022-07-04
-                                                                //You can format date as per your need
-
-                                                                setState(() {
-                                                                  selectedDateVisit =
-                                                                      formattedDate;
-
-                                                                  dateVisitController
-                                                                          .text =
-                                                                      selectedDateVisit;
+                                                                if (pickedDate !=
+                                                                    null) {
                                                                   debugPrint(
-                                                                      "selectedDateVisit: $selectedDateVisit ");
-                                                                });
-                                                              } else {
-                                                                debugPrint(
-                                                                    "Date is not selected");
-                                                              }
-                                                            },
-                                                            child: SizedBox(
-                                                              width: ScreenUtil()
-                                                                      .screenWidth /
-                                                                  1.6,
-                                                              child:
-                                                                  CustomTextField(
-                                                                readOnly: false,
-                                                                hintText:
-                                                                    "Example: ${DateFormat('dd-MM-yyyy').format(DateTime(1985, 7, 1))}",
-                                                                controller:
-                                                                    dateVisitController,
-                                                                onChanged:
-                                                                    (v) {},
+                                                                      pickedDate
+                                                                          .toString()); //get the picked date in the format => 2022-07-04 00:00:00.000
+                                                                  String
+                                                                      formattedDate =
+                                                                      DateFormat(
+                                                                              'dd-MM-yyyy')
+                                                                          .format(
+                                                                              pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                                                                  DateTime
+                                                                      formatAge =
+                                                                      pickedDate;
+
+                                                                  debugPrint(
+                                                                      formattedDate); //formatted date output using intl package =>  2022-07-04
+                                                                  //You can format date as per your need
+
+                                                                  newSetState(
+                                                                      () {
+                                                                    selectedDateVisit =
+                                                                        formattedDate;
+
+                                                                    dateVisitController
+                                                                            .text =
+                                                                        selectedDateVisit;
+                                                                    debugPrint(
+                                                                        "selectedDateVisit: $selectedDateVisit ");
+                                                                  });
+                                                                } else {
+                                                                  debugPrint(
+                                                                      "Date is not selected");
+                                                                }
+                                                              },
+                                                              child: SizedBox(
+                                                                width: ScreenUtil()
+                                                                        .screenWidth /
+                                                                    1.6,
+                                                                child:
+                                                                    CustomTextField(
+                                                                  readOnly:
+                                                                      false,
+                                                                  hintText:
+                                                                      "Example: ${DateFormat('dd-MM-yyyy').format(DateTime(1985, 7, 1))}",
+                                                                  controller:
+                                                                      dateVisitController,
+                                                                  onChanged:
+                                                                      (v) {},
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 16.h),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text("Doctor:",
-                                                              style: BaseText
-                                                                  .blackText14),
-                                                          // SizedBox(width: ,)
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        13.r),
-                                                            child: SizedBox(
-                                                              width: ScreenUtil()
-                                                                      .screenWidth /
-                                                                  1.6,
-                                                              child:
-                                                                  DropdownButtonFormField2<
-                                                                      String>(
-                                                                isExpanded:
-                                                                    true,
-                                                                decoration:
-                                                                    InputDecoration(
-                                                                  fillColor:
-                                                                      ColorName
-                                                                          .accentColor,
-                                                                  filled: true,
-                                                                  contentPadding:
-                                                                      EdgeInsets.symmetric(
-                                                                          vertical:
-                                                                              10.h),
-                                                                  border:
-                                                                      InputBorder
-                                                                          .none,
-                                                                ),
-                                                                alignment: Alignment
-                                                                    .centerLeft,
-                                                                hint: Text(
-                                                                  'Select Doctor',
-                                                                  style: BaseText
-                                                                      .blackText11
-                                                                      .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
-                                                                    color: ColorName
-                                                                        .activeTextColor,
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 16.h),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text("Doctor:",
+                                                                style: BaseText
+                                                                    .blackText14),
+                                                            // SizedBox(width: ,)
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          13.r),
+                                                              child: SizedBox(
+                                                                width: ScreenUtil()
+                                                                        .screenWidth /
+                                                                    1.6,
+                                                                child: DropdownButtonFormField2<
+                                                                    Map<String,
+                                                                        dynamic>>(
+                                                                  isExpanded:
+                                                                      true,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    fillColor:
+                                                                        ColorName
+                                                                            .accentColor,
+                                                                    filled:
+                                                                        true,
+                                                                    contentPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                10.h),
+                                                                    border:
+                                                                        InputBorder
+                                                                            .none,
                                                                   ),
-                                                                ),
-                                                                items:
-                                                                    listDoctors
-                                                                        .map((item) =>
-                                                                            DropdownMenuItem<String>(
-                                                                              value: item["name"],
-                                                                              child: Container(
-                                                                                alignment: AlignmentDirectional.centerStart,
-                                                                                child: Text(
-                                                                                  item["name"],
-                                                                                  style: BaseText.mainText12.copyWith(
-                                                                                    fontWeight: FontWeight.w500,
-                                                                                  ),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  hint: Text(
+                                                                    'Select Doctor',
+                                                                    style: BaseText
+                                                                        .blackText11
+                                                                        .copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: ColorName
+                                                                          .activeTextColor,
+                                                                    ),
+                                                                  ),
+                                                                  items: listDoctors
+                                                                      .map((item) => DropdownMenuItem<Map<String, dynamic>>(
+                                                                            value:
+                                                                                item,
+                                                                            child:
+                                                                                Container(
+                                                                              alignment: AlignmentDirectional.centerStart,
+                                                                              child: Text(
+                                                                                item["name"],
+                                                                                style: BaseText.mainText12.copyWith(
+                                                                                  fontWeight: FontWeight.w500,
                                                                                 ),
                                                                               ),
-                                                                            ))
-                                                                        .toList(),
-                                                                validator:
-                                                                    (value) {
-                                                                  if (value ==
-                                                                      null) {
-                                                                    return 'Please select blood type.';
-                                                                  }
-                                                                  return null;
-                                                                },
-                                                                onChanged:
-                                                                    (value) {
-                                                                  //Do something when selected item is changed.
-                                                                },
-                                                                onSaved:
-                                                                    (value) {
-                                                                  selectedDoctor =
-                                                                      value
-                                                                          .toString();
-                                                                },
-                                                                buttonStyleData:
-                                                                    const ButtonStyleData(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          right:
-                                                                              8),
-                                                                ),
-                                                                iconStyleData:
-                                                                    const IconStyleData(
-                                                                  icon: Icon(
-                                                                    Icons
-                                                                        .keyboard_arrow_down,
-                                                                    color: ColorName
-                                                                        .activeTextColor,
+                                                                            ),
+                                                                          ))
+                                                                      .toList(),
+                                                                  validator:
+                                                                      (value) {
+                                                                    if (value ==
+                                                                        null) {
+                                                                      return 'Please select blood type.';
+                                                                    }
+                                                                    return null;
+                                                                  },
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    newSetState(
+                                                                        () {
+                                                                      selectedDoctor =
+                                                                          value;
+                                                                      selectedDoctorNew = listDoctors.firstWhere((e) =>
+                                                                          e["name"] ==
+                                                                          value);
+                                                                      debugPrint(
+                                                                          "selectedDoctorNew $selectedDoctorNew");
+                                                                    });
+                                                                  },
+                                                                  onSaved:
+                                                                      (value) {},
+                                                                  buttonStyleData:
+                                                                      const ButtonStyleData(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            right:
+                                                                                8),
                                                                   ),
-                                                                  iconSize: 24,
-                                                                ),
-                                                                dropdownStyleData:
-                                                                    DropdownStyleData(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            8.r),
-                                                                    // color: ColorName.grey1Color,
+                                                                  iconStyleData:
+                                                                      const IconStyleData(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .keyboard_arrow_down,
+                                                                      color: ColorName
+                                                                          .activeTextColor,
+                                                                    ),
+                                                                    iconSize:
+                                                                        24,
                                                                   ),
-                                                                  // direction: DropdownDirection.right,
-                                                                ),
-                                                                menuItemStyleData:
-                                                                    const MenuItemStyleData(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              16),
+                                                                  dropdownStyleData:
+                                                                      DropdownStyleData(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.r),
+                                                                      // color: ColorName.grey1Color,
+                                                                    ),
+                                                                    // direction: DropdownDirection.right,
+                                                                  ),
+                                                                  menuItemStyleData:
+                                                                      const MenuItemStyleData(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            16),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 50.h)
-                                                    ],
-                                                  ),
-                                                ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 24.h),
+                                                        PrimaryButton(
+                                                          height: 45.h,
+                                                          title: "Save",
+                                                          onPressed: () {
+                                                            var row = PatientHistory(
+                                                                idRecordNumber:
+                                                                    patient[
+                                                                        "recordNumber"],
+                                                                idRegisteredBy:
+                                                                    listRegisteredBy
+                                                                        .firstWhere((element) =>
+                                                                            element.role ==
+                                                                            1)
+                                                                        .id,
+                                                                idConsultationBy:
+                                                                    selectedDoctor[
+                                                                        "id"],
+                                                                dateVisit:
+                                                                    dateVisitController
+                                                                        .text,
+                                                                symptoms:
+                                                                    "symptoms",
+                                                                doctorDiagnose:
+                                                                    "doctorDiagnose",
+                                                                icd10Code:
+                                                                    "icd10Code",
+                                                                icd10Name:
+                                                                    "icd10Name",
+                                                                isDone: false);
+
+                                                            debugPrint(row
+                                                                .toMap()
+                                                                .toString());
+
+                                                            databaseInstance!
+                                                                .insertHistory(
+                                                              row.toMap(),
+                                                            );
+                                                          },
+                                                        ),
+                                                        SizedBox(height: 50.h)
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
                                               ),
                                             );
                                           });

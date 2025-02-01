@@ -2,11 +2,12 @@ import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class User {
-  int id, role;
+  int? id;
+  int role;
   String email, password, name, createdAt, updatedAt;
 
   User({
-    required this.id,
+    this.id,
     required this.email,
     required this.password,
     required this.name,
@@ -38,7 +39,7 @@ class User {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      // 'id': id,
       'name': name,
       'email': email,
       'password': password,

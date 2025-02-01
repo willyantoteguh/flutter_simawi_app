@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_simawi_app/data/model/patient.dart';
 import 'package:flutter_simawi_app/presentation/profile/profile_screen.dart';
+import 'package:flutter_simawi_app/presentation/profile/user_management_screen.dart';
 import 'package:flutter_simawi_app/presentation/registration/patient_registration_screen.dart';
 import 'package:flutter_simawi_app/presentation/registration/patient_screen.dart';
 
@@ -15,10 +16,9 @@ class MainApp extends StatelessWidget {
     return ScreenUtilInit(
         designSize: const Size(360, 800),
         builder: (context, child) {
-          return MaterialApp(
-            // routerConfig: AppRouter().goRouter,
+          return MaterialApp.router(
+            routerConfig: AppRouter().goRouter,
             debugShowCheckedModeBanner: false,
-            home: const PatientScreen(),
             theme: ThemeData.light(useMaterial3: true),
           );
         });

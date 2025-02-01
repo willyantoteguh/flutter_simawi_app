@@ -170,7 +170,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       debugPrint("onTap Update");
 
                       User updateUser = User(
-                        id: _currentUser!.id,
+                        // id: _currentUser!.id,
                         name: fullNameController.text,
                         email: emailController.text,
                         password: passwordController.text,
@@ -182,13 +182,13 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       debugPrint(updateUser.toMap().toString());
 
                       await databaseInstance.update(
-                          _currentUser!.id, updateUser.toMap());
+                          _currentUser!.id!, updateUser.toMap());
                       Navigator.pop(context);
                     } else {
                       debugPrint("onTap Create");
 
                       User newUser = User(
-                        id: Random().nextInt(200),
+                        // id: Random().nextInt(200),
                         name: fullNameController.text,
                         email: emailController.text,
                         password: passwordController.text,

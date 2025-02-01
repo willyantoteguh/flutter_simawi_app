@@ -124,7 +124,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                       databaseInstance,
                                       setState,
                                       false,
-                                      snapshot.data![index].id,
+                                      snapshot.data![index].id ?? 0,
                                     ));
                           },
                         ),

@@ -362,7 +362,7 @@ class _PatientRegistrationState extends State<PatientRegistration> {
                     Navigator.pop(context);
                   } else {
                     var patientTemp = {
-                      'idPatient': Random().nextInt(10),
+                      // 'idPatient': Random().nextInt(10),
                       'recordNumber': Random().nextInt(1000),
                       'namePatient': fullNameController.text,
                       'birth': birthController.text,
