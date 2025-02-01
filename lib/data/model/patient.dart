@@ -6,14 +6,14 @@ class Patient {
   int recordNumber;
   String name;
   String birth;
-  double age; // Field tidak ada di ERD
+  dynamic age; // Field tidak ada di ERD
   String nik;
   int gender; // Improve
   String phone;
   String address;
-  String bloodType;
-  double? weight;
-  double? height;
+  dynamic bloodType;
+  String? weight;
+  String? height;
   String createdAt;
   String updatedAt;
 
@@ -39,14 +39,14 @@ class Patient {
     int? recordNumber,
     String? name,
     String? birth,
-    double? age,
+    dynamic age,
     String? nik,
     int? gender,
     String? phone,
     String? address,
-    String? bloodType,
-    double? weight,
-    double? height,
+    dynamic bloodType,
+    String? weight,
+    String? height,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -89,20 +89,20 @@ class Patient {
 
   factory Patient.fromMap(Map<String, dynamic> map) {
     return Patient(
-      id: map['id'] as int,
+      id: map['idPatient'] as int,
       recordNumber: map['recordNumber'] as int,
-      name: map['name'] as String,
+      name: map['namePatient'] as String,
       birth: map['birth'] as String,
-      age: map['age'] as double,
+      age: map['age'] as dynamic,
       nik: map['nik'] as String,
       gender: map['gender'] as int,
       phone: map['phone'] as String,
       address: map['address'] as String,
-      bloodType: map['bloodType'] as String,
-      weight: map['weight'] as double,
-      height: map['height'] as double,
-      createdAt: map['createdAt'] as String,
-      updatedAt: map['updatedAt'] as String,
+      bloodType: map['bloodType'] as dynamic,
+      weight: map['weight'] != null ? map['weight'] as String : null,
+      height: map['height'] != null ? map['height'] as String : null,
+      createdAt: map['createdAtPatient'] as String,
+      updatedAt: map['updatedAtPatient'] as String,
     );
   }
 

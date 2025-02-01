@@ -17,9 +17,11 @@ import '../widgets/custom_textfield.dart';
 
 class PatientRegistration extends StatefulWidget {
   final bool isUpdateScreen;
+  final Patient? patient;
 
   const PatientRegistration({
     super.key,
+    this.patient,
     this.isUpdateScreen = false,
   });
 
@@ -59,6 +61,21 @@ class _PatientRegistrationState extends State<PatientRegistration> {
 
     if (isUpdateScreen) {
       debugPrint("isUpdateScreen yah");
+
+      patient = widget.patient;
+
+      debugPrint(patient.toString());
+
+      fullNameController.text = patient?.name ?? "";
+      birthController.text = patient?.birth ?? "18";
+      ageController.text = patient?.age;
+      nikController.text = patient?.nik ?? "";
+      _genderSelectedValue = patient?.gender;
+      phoneController.text = patient?.phone ?? "";
+      addressController.text = patient?.address ?? "";
+      _selectedBloodTypeValue = patient?.bloodType ?? "";
+      weightController.text = patient?.weight ?? "";
+      heightController.text = patient?.height ?? "";
     }
   }
 
@@ -297,43 +314,76 @@ class _PatientRegistrationState extends State<PatientRegistration> {
               SizedBox(height: 46.h),
               PrimaryButton(
                 height: 45.h,
-                title: "Register",
+                title: (isUpdateScreen) ? "Update" : "Register",
                 onPressed: () async {
-                  patient = Patient(
-                    id: 1,
-                    recordNumber: Random().nextInt(1000),
-                    name: fullNameController.text,
-                    birth: birthController.text,
-                    age: double.parse(ageController.text),
-                    nik: nikController.text,
-                    gender: _genderSelectedValue,
-                    phone: phoneController.text,
-                    address: addressController.text,
-                    bloodType: _selectedBloodTypeValue.toString(),
-                    // weight: double.parse(weightController.text),
-                    // height: double.parse(heightController.text),
-                    createdAt: DateTime.now().toString(),
-                    updatedAt: DateTime.now().toString(),
-                  );
+                  double age = double.tryParse(ageController.text) ?? 18.0;
+                  double weight = double.tryParse(weightController.text) ?? 0.0;
+                  double height = double.tryParse(heightController.text) ?? 0.0;
+                  // patient = Patient(
+                  //   id: 1,
+                  //   recordNumber: Random().nextInt(1000),
+                  //   name: fullNameController.text,
+                  //   birth: birthController.text,
+                  //   age: age,
+                  //   nik: nikController.text,
+                  //   gender: _genderSelectedValue,
+                  //   phone: phoneController.text,
+                  //   address: addressController.text,
+                  //   bloodType: _selectedBloodTypeValue.toString(),
+                  //   // weight: double.parse(weightController.text),
+                  //   // height: double.parse(heightController.text),
+                  //   createdAt: DateTime.now().toString(),
+                  //   updatedAt: DateTime.now().toString(),
+                  // );
 
-                  debugPrint(patient!.toMap().toString());
+                  if (isUpdateScreen) {
+                    var patientTemp = {
+                      'idPatient': patient?.id,
+                      'recordNumber': patient?.recordNumber,
+                      'namePatient': fullNameController.text,
+                      'birth': birthController.text,
+                      'age': ageController.text,
+                      'nik': nikController.text,
+                      'gender': _genderSelectedValue,
+                      'phone': phoneController.text,
+                      'address': addressController.text,
+                      'bloodType': _selectedBloodTypeValue.toString(),
+                      'weight': weightController.text,
+                      'height': heightController.text,
+                      'createdAtPatient': patient?.createdAt,
+                      'updatedAtPatient': DateTime.now().toString(),
+                    };
 
-                  int idInsert = await databaseInstance.insertPatient({
-                    'idPatient': 1,
-                    'recordNumber': Random().nextInt(1000),
-                    'namePatient': fullNameController.text,
-                    'birth': birthController.text,
-                    'age': ageController.text,
-                    'nik': nikController.text,
-                    'gender': _genderSelectedValue,
-                    'phone': phoneController.text,
-                    'address': addressController.text,
-                    'bloodType': _selectedBloodTypeValue.toString(),
-                    'createdAtPatient': DateTime.now().toString(),
-                    'updatedAtPatient': DateTime.now().toString(),
-                  });
-                  debugPrint("Success : $idInsert");
-                  Navigator.pop(context);
+                    debugPrint("$patientTemp");
+
+                    await databaseInstance.updatePatient(
+                        patient?.id ?? 1, patientTemp);
+                    Navigator.pop(context);
+                  } else {
+                    var patientTemp = {
+                      'idPatient': Random().nextInt(10),
+                      'recordNumber': Random().nextInt(1000),
+                      'namePatient': fullNameController.text,
+                      'birth': birthController.text,
+                      'age': age,
+                      'nik': nikController.text,
+                      'gender': _genderSelectedValue,
+                      'phone': phoneController.text,
+                      'address': addressController.text,
+                      'bloodType': _selectedBloodTypeValue.toString(),
+                      'weight': weight,
+                      'height': height,
+                      'createdAtPatient': DateTime.now().toString(),
+                      'updatedAtPatient': DateTime.now().toString(),
+                    };
+
+                    debugPrint("$patientTemp");
+
+                    int idInsert =
+                        await databaseInstance.insertPatient(patientTemp);
+                    debugPrint("Success : $idInsert");
+                    Navigator.pop(context);
+                  }
                 },
               ),
               SizedBox(height: 100.h),

@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 
 class DatabaseInstance {
   final String databaseName = "SIMRS_Test.db";
-  final int databaseVersion = 2;
+  final int databaseVersion = 4;
 
   final String tableName = 'user';
   final String id = 'id';
@@ -45,17 +45,34 @@ class DatabaseInstance {
   }
 
   Future<Database> _initDatabase() async {
-    Directory databaseDirectory = await getApplicationDocumentsDirectory();
-    String path = join(databaseDirectory.path, databaseName);
+    String databaseDirectory = await getDatabasesPath();
+    String path = join(databaseDirectory, databaseName);
     debugPrint('database init');
-    return openDatabase(path, version: databaseVersion, onCreate: _onCreate);
+    return openDatabase(
+      path,
+      version: databaseVersion,
+      onCreate: _onCreate,
+    );
   }
 
   Future _onCreate(Database db, int version) async {
     await db.execute(
         'CREATE TABLE $tableName ($id INTEGER PRIMARY KEY, $name TEXT NULL, $email TEXT NULL, $password TEXT NULL, $role INTEGER, $createdAt TEXT NULL, $updatedAt TEXT NULL)');
-    await db.execute(
-        'CREATE TABLE $table2Name ($idPatient INTEGER PRIMARY KEY, $recordNumber INTEGER, $namePatient TEXT NULL, $birth TEXT NULL, $age VARCHAR NULL, $nik TEXT NULL, $gender INTEGER, $phone TEXT NULL, $address TEXT NULL, $bloodType TEXT NULL, $createdAtPatient TEXT NULL,  $updatedAtPatient TEXT NULL)');
+    await db
+        .execute('''CREATE TABLE $table2Name ($idPatient INTEGER PRIMARY KEY, 
+        $recordNumber INTEGER, 
+        $namePatient TEXT NULL, 
+        $birth TEXT NULL, 
+        $age VARCHAR NOT NULL, 
+        $nik TEXT NULL, 
+        $gender INTEGER, 
+        $phone TEXT NULL, 
+        $address TEXT NULL, 
+        $bloodType INTEGER,
+        $weight VARCHAR NULL,
+        $height VARCHAR NULL, 
+        $createdAtPatient TEXT NULL,  
+        $updatedAtPatient TEXT NULL)''');
   }
 
   Future<List<User>> getAll() async {
@@ -64,10 +81,11 @@ class DatabaseInstance {
     return result;
   }
 
-  Future<List<Patient>> getAllPatient() async {
+  Future<List<Map<String, Object?>>> getAllPatient() async {
     final data = await _database!.query(table2Name);
-    List<Patient> result = data.map((e) => Patient.fromMap(e)).toList();
-    return result;
+    debugPrint("getAllPatient data nih: ${data.first}");
+    // List<Patient> result = data.map((e) => Patient.fromMap(e)).toList();
+    return data;
   }
 
   Future<int> insert(Map<String, dynamic> row) async {
@@ -99,9 +117,22 @@ class DatabaseInstance {
     return query;
   }
 
+  Future<int> hapusPatient(idPatient) async {
+    final query = await _database!
+        .delete(table2Name, where: '$idPatient = ?', whereArgs: [idPatient]);
+
+    return query;
+  }
+
   Future<int> update(int idUser, Map<String, dynamic> row) async {
     final query = await _database!
         .update(tableName, row, where: '$id = ?', whereArgs: [idUser]);
+    return query;
+  }
+
+  Future<int> updatePatient(int idUser, Map<String, dynamic> row) async {
+    final query = await _database!
+        .update(table2Name, row, where: '$idPatient = ?', whereArgs: [idUser]);
     return query;
   }
 }

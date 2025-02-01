@@ -10,6 +10,7 @@ import '../../common/theme/color/color_name.dart';
 import '../../common/theme/text/base_text.dart';
 import '../../data/database/database_instance.dart';
 import '../widgets/custom_appbar.dart';
+import '../widgets/delete_dialog.dart';
 
 class PatientScreen extends StatefulWidget {
   const PatientScreen({super.key});
@@ -58,7 +59,7 @@ class _PatientScreenState extends State<PatientScreen> {
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FutureBuilder<List<Patient>>(
+            FutureBuilder<List<Map<String, dynamic>>>(
               future: databaseInstance!.getAllPatient(),
               builder: (context, snapshot) {
                 debugPrint("Result : ${snapshot.data}");
@@ -76,24 +77,51 @@ class _PatientScreenState extends State<PatientScreen> {
                           var patient = patients[index];
 
                           return buildPatientTile(
-                            number: patient.id.toString(),
-                            name: patient.name,
-                            birth: patient.birth,
-                            onEditTap: () => navigateTo(
+                            number: patient["idPatient"].toString(),
+                            name: patient["namePatient"],
+                            age: patient["age"],
+                            onEditTap: () {
+                              Patient patientToUpdate =
+                                  Patient.fromMap(patient);
+
+                              navigateTo(
+                                context,
+                                PatientRegistration(
+                                  isUpdateScreen: true,
+                                  patient: patientToUpdate,
+                                ),
+                              ).then((value) => setState(() {}));
+                            },
+                            onDeleteTap: () => showAlertDialog(
                               context,
-                              const PatientRegistration(
-                                isUpdateScreen: true,
-                              ),
-                            ).then((value) => setState(() {})),
-                            onDeleteTap: () {},
+                              databaseInstance,
+                              setState,
+                              true,
+                              patient["idPatient"],
+                            ),
                           );
                         },
                       ),
                     );
                   } else {
-                    return Text(
-                      "Has No Data",
-                      style: BaseText.blackText14,
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SizedBox(height: ScreenUtil().screenHeight / 2.5),
+                          Text(
+                            "Has No Data",
+                            style: BaseText.blackText14,
+                          ),
+                          SizedBox(height: 14.h),
+                          CircleAvatar(
+                            child: IconButton(
+                              onPressed: _refresh,
+                              icon: const Icon(Icons.refresh),
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   }
                 }
@@ -114,7 +142,7 @@ class _PatientScreenState extends State<PatientScreen> {
   ListTile buildPatientTile({
     required String number,
     required String name,
-    required String birth,
+    required String age,
     Function()? onEditTap,
     Function()? onDeleteTap,
   }) {
@@ -127,7 +155,7 @@ class _PatientScreenState extends State<PatientScreen> {
       ),
       title: Text(name,
           style: BaseText.blackText14.copyWith(fontWeight: BaseText.regular)),
-      subtitle: Text(birth,
+      subtitle: Text("Usia: ${age.substring(0, 2)} Tahun",
           style: BaseText.blackText12.copyWith(fontWeight: BaseText.light)),
       trailing: Wrap(
         crossAxisAlignment: WrapCrossAlignment.start,

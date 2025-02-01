@@ -8,6 +8,7 @@ import '../../data/database/database_instance.dart';
 import '../../data/model/user.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/custom_divider.dart';
+import '../widgets/delete_dialog.dart';
 import '../widgets/other_navigation.dart';
 import 'create_user_screen.dart';
 
@@ -38,30 +39,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   Future initDatabase() async {
     await databaseInstance!.database();
     setState(() {});
-  }
-
-  showAlertDialog(BuildContext contex, int idUser) {
-    Widget okButton = TextButton(
-      child: const Text("Confirm"),
-      onPressed: () {
-        //delete disini
-        databaseInstance!.hapus(idUser);
-        Navigator.of(contex, rootNavigator: true).pop();
-        setState(() {});
-      },
-    );
-
-    AlertDialog alertDialog = AlertDialog(
-      title: const Text("Alert !"),
-      content: const Text("Are you sure you will remove ?"),
-      actions: [okButton],
-    );
-
-    showDialog(
-        context: contex,
-        builder: (BuildContext context) {
-          return alertDialog;
-        });
   }
 
   @override
@@ -143,7 +120,12 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                       )).then((value) => setState(() {}));
                                 },
                                 onDeleteTap: () => showAlertDialog(
-                                    context, snapshot.data![index].id));
+                                      context,
+                                      databaseInstance,
+                                      setState,
+                                      false,
+                                      snapshot.data![index].id,
+                                    ));
                           },
                         ),
                       );
