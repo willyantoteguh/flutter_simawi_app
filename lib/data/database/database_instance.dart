@@ -188,4 +188,28 @@ class DatabaseInstance {
         .update(table2Name, row, where: '$idPatient = ?', whereArgs: [idUser]);
     return query;
   }
+
+  Future<Map<String, dynamic>> getPatientState() async {
+    final query = '''
+    SELECT 
+      COUNT(*) AS totalPatient,
+      MAX(createdAtPatient) AS latestPatient,
+      MIN(createdAtPatient) AS oldestPatient
+    FROM $table2Name
+  ''';
+
+    final results = await _database!.rawQuery(query);
+
+    if (results.isEmpty) {
+      return {};
+    }
+
+    final stats = results.first;
+
+    return {
+      'latestUser': stats['latestPatient'],
+      'oldestUser': stats['oldestPatient'],
+      'totalUsers': stats['totalPatient'],
+    };
+  }
 }

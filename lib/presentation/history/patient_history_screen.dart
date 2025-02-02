@@ -20,6 +20,8 @@ import '../widgets/custom_appbar.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/delete_dialog.dart';
 
+enum PatientServed { NotDone, Done }
+
 class PatientHistoryScreen extends StatefulWidget {
   const PatientHistoryScreen({super.key});
 
@@ -45,6 +47,9 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   final TextEditingController dateVisitController = TextEditingController();
 
   var patientJoin;
+
+  var selectedPatientServed;
+  PatientServed _patientServed = PatientServed.NotDone;
 
   List<User> listRegisteredBy = [];
   @override
@@ -139,7 +144,114 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                                                     width: double.infinity,
                                                     child: Column(
                                                       children: [
+                                                        Text("Not Done",
+                                                            style: BaseText
+                                                                .blackText14),
+                                                        Row(
+                                                          children: [
+                                                            Radio(
+                                                                groupValue:
+                                                                    _patientServed,
+                                                                value:
+                                                                    PatientServed
+                                                                        .NotDone,
+                                                                visualDensity:
+                                                                    VisualDensity
+                                                                        .compact,
+                                                                activeColor:
+                                                                    ColorName
+                                                                        .mainColor,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  newSetState(
+                                                                      () {
+                                                                    _patientServed =
+                                                                        value!;
+                                                                  });
+                                                                }),
+                                                            Text("Admin",
+                                                                style: BaseText
+                                                                    .blackText12),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Radio(
+                                                                groupValue:
+                                                                    _patientServed,
+                                                                value:
+                                                                    PatientServed
+                                                                        .Done,
+                                                                visualDensity:
+                                                                    VisualDensity
+                                                                        .compact,
+                                                                activeColor:
+                                                                    ColorName
+                                                                        .mainColor,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  newSetState(
+                                                                      () {
+                                                                    _patientServed =
+                                                                        value!;
+                                                                  });
+                                                                }),
+                                                            Text("Doctor",
+                                                                style: BaseText
+                                                                    .blackText12),
+                                                          ],
+                                                        ),
                                                         SizedBox(height: 24.h),
+                                                        _buildRow(
+                                                          label: "Name: ",
+                                                          value: patient[
+                                                                  "namePatient"]
+                                                              .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label: "Usia: ",
+                                                          value: patient["age"]
+                                                              .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label:
+                                                              "Jenis Kelamin: ",
+                                                          value:
+                                                              patient["gender"]
+                                                                  .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label: "No Telepon: ",
+                                                          value:
+                                                              patient["phone"]
+                                                                  .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label: "Alamat: ",
+                                                          value:
+                                                              patient["address"]
+                                                                  .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label:
+                                                              "Tanggal Periksa: ",
+                                                          value: patient[
+                                                                  "dateVisit"]
+                                                              .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
+                                                        _buildRow(
+                                                          label: "Doketer: ",
+                                                          value: patient[
+                                                                  "consultationBy"]
+                                                              .toString(),
+                                                        ),
+                                                        SizedBox(height: 14.h),
                                                         SizedBox(height: 50.h)
                                                       ],
                                                     ),
@@ -188,6 +300,26 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
             .then((value) => setState(() {})),
         child: const Icon(Icons.add, color: ColorName.whiteColor),
       ),
+    );
+  }
+
+  Row _buildRow({
+    String label = "",
+    String value = "",
+  }) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: BaseText.blackText12.copyWith(
+            fontWeight: BaseText.medium,
+          ),
+        ),
+        Text(
+          value,
+          style: BaseText.blackText12,
+        )
+      ],
     );
   }
 
